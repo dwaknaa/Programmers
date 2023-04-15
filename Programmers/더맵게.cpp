@@ -1,37 +1,26 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <queue>
 #include <iostream>
 using namespace std;
 
 int solution(vector<int> scoville, int K) {
     int answer = 0;
     auto isUnder = [&K](int i) { return K > i; };
-    make_heap(scoville.begin(), scoville.end(), greater<>{});
     
+    priority_queue<int, vector<int>, greater<int>> pq(scoville.begin(), scoville.end());
     while(1)
     {
-        if(scoville.size() == 1 && scoville.front() < K) return -1;
-        int under = count_if(scoville.begin(), scoville.end(), isUnder);
-
-        if(under == 0)
-        {
-            return answer;
-        }
+        if(pq.top() >= K) return answer;
+        if(pq.size() == 1 && pq.top() < K) return -1;
         
-        int first = scoville.front();
-        pop_heap(scoville.begin(), scoville.end());
-        scoville.pop_back();
-        sort_heap(scoville.begin(), scoville.end());
+        int first = pq.top();
+        pq.pop();
+        int second = pq.top();
+        pq.pop();
 
-        int second = scoville.front();
-        pop_heap(scoville.begin(), scoville.end());
-        scoville.pop_back();
-        sort_heap(scoville.begin(), scoville.end());
-
-        scoville.push_back(first + (second*2));
-        push_heap(scoville.begin(), scoville.end());
-        sort_heap(scoville.begin(), scoville.end());
+        pq.push(first+(second*2));
 
         answer++;
     }
