@@ -1,13 +1,11 @@
 #include <string>
 #include <vector>
 #include <algorithm> // For vector find
-#include <iostream>
 #include <sstream>
 using namespace std;
 //1-2-3-1
 int solution(vector<int> ingredient) {
     int answer = 0;
-    
     std::stringstream ss;
     for (auto it = ingredient.begin(); it != ingredient.end(); it++)
     {
@@ -16,21 +14,17 @@ int solution(vector<int> ingredient) {
 
     std::string str = ss.str();
     std::string findStr = "1231";
+    int pos = 0;
     while(1)
     {
-        auto index = str.find(findStr);
-        if(index == string::npos)
-        {
-            break;
-        }
-        else
-        {
-            answer++;
-            string before = str.substr(0, index);
-            string after = str.substr(index+findStr.length());
-            str = before + after;
-        }
+        size_t ret = str.find("1231", pos);
+        if (ret == std::string::npos) break;
+        str.erase(ret, 4);
+        if (ret > 2)
+            pos = ret - 3;
+        answer++;
     }
     
     return answer;
 }
+
