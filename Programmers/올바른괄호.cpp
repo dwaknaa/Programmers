@@ -1,51 +1,42 @@
-#include<string>
+#include <string>
 #include <iostream>
+#include <stack>
 #include <algorithm>
 using namespace std;
 
 bool solution(string s)
 {
     bool answer = true;
-
-    if(s.at(s.length()-1) == '('
-      || s.length() % 2 != 0) return false;
+    stack<string> strStack;
     
-    while(1)
-    {
-        if(s.at(0) == ')'  ||
-           count(s.begin(), s.end(), '(') != count(s.begin(), s.end(), ')'))
-        {
-            return false;
-        }
-        
-        auto index = s.find(")(");
+    int startCnt = count(s.begin(), s.end(), '(');
+    int endCnt = count(s.begin(), s.end(), ')');
 
-        if(index == string::npos)
+    if(startCnt != endCnt) return false;
+    
+    int startParen = 0;
+    int endParen = 0;
+    
+    for(int i=s.length()-1; i>=0; i--)
+    {
+        if(s[i] == ')')
         {
-            if(count(s.begin(), s.end(), '(') != count(s.begin(), s.end(), ')'))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        
-        string temp = s.substr(0, index+1);
-        
-        if(temp.length() % 2 != 0 ||
-           count(temp.begin(), temp.end(), '(') !=
-           count(temp.begin(), temp.end(), ')'))
-        {
-            return false;
+            endParen++;
         }
         else
         {
-            temp = s.substr(index+1);
-            s = temp;
+            if(endParen == 0) return false;
+            startParen++;
+
+            if(startParen > endParen) return false;
+        }
+        
+        if(startParen == endParen)
+        {
+            startParen = 0;
+            endParen = 0;
         }
     }
-
+    
     return answer;
 }
