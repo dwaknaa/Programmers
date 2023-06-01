@@ -1,33 +1,27 @@
 #include <iostream>
 #include <string>
-#include <algorithm>
+#include <stack>
 using namespace std;
 
 int solution(string s)
 {
     int answer = -1;
-
-    while(1)
-    {
-        bool changed = false;
-        if(s.length() < 2) break;
-        
-        for(int i=0; i<s.length()-1; i++)
-        {
-            if(s.substr(i, 1) == s.substr(i+1, 1))
-            {
-                s[i] = '0';
-                s[i+1] = '0';
-                changed = true;
-            }
-        }
-        
-        if(!changed) break;
-        s.erase(remove(s.begin(), s.end(), '0'), s.end());
-    }
+    stack<char> st;
     
-    answer = 1;
-    if (s.length() > 0) answer = 0;
+    for(int i=0; i<s.length(); i++)
+    {
+        if(st.size() > 0 && st.top() == s[i])
+        {
+            st.pop();
+        }
+        else
+        {
+            st.push(s[i]);
+        }
+    }
+
+    if(st.size() == 0) answer = 1;
+    else answer = 0;
     
     return answer;
 }
