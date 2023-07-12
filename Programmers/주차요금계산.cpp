@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <iostream>
+#include <sstream>
 using namespace std;
 
 int getParkingTime(string startTime, string endTime)
@@ -35,12 +35,10 @@ vector<int> solution(vector<int> fees, vector<string> records) {
     
     for(int i=0; i<records.size(); i++)
     {
-        string record = records[i];
-        auto index = record.find(" ");
-        string time = record.substr(0, index);
-        record = record.substr(index+1);
-        index = record.find(" ");
-        string carNum = record.substr(0, index);
+        stringstream ss(records[i]);
+        string time, carNum, type;
+        
+        ss >> time >> carNum >> type;
         
         auto ret = recordMap.insert({carNum, time});
         if(!ret.second)
