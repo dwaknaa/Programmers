@@ -1,33 +1,31 @@
 #include <string>
 #include <vector>
-#include <climits>
 using namespace std;
-
-int answerCnt = INT_MAX;
-
-void dfs(int x, int y, int n, int cnt)
-{
-    if(x == y && cnt <= answerCnt) answerCnt = cnt;
-
-    if(x >= y) return;
-
-    dfs(x*2, y, n, cnt+1);
-    dfs(x*3, y, n, cnt+1);
-    dfs(x+n, y, n, cnt+1);
-}
 
 int solution(int x, int y, int n) {
     int answer = 0;
-    
-    dfs(x, y, n, 0);
-    
-    if(answerCnt == INT_MAX)
+    vector<int> vec;
+    vec.push_back(y);
+    while(1)
     {
-        answer = -1;
-    }
-    else
-    {
-        answer = answerCnt;
+        vector<int> temp;
+        for(auto iter=vec.begin(); iter!=vec.end(); iter++)
+        {
+            if(*iter==x)
+            {
+                return answer;
+            }
+            
+            if(*iter-n >= x) temp.push_back(*iter-n);
+            if(*iter/2 >= x && *iter%2==0) temp.push_back(*iter/2);
+            if(*iter/3 >= x && *iter%3==0) temp.push_back(*iter/3);
+        }
+        
+        if(temp.empty()) return -1;
+
+        answer++;
+        vec.clear();
+        vec.assign(temp.begin(), temp.end());
     }
     
     return answer;
