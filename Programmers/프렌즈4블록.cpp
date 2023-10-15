@@ -39,13 +39,7 @@ int solution(int m, int n, vector<string> board) {
         }
 
         answer += s.size();
-        
-        for(auto iter=board.begin(); iter!=board.end(); iter++)
-        {
-            string str = *iter;
-            cout << str << endl;
-        }
-        
+
         for(int i=0; i<n; i++)
         {
             for(int j=0; j<m; j++)
