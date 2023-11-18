@@ -1,30 +1,39 @@
 #include <string>
 #include <vector>
-#include <map>
 using namespace std;
 
 vector<int> solution(vector<int> sequence, int k) {
     vector<int> answer;
-    map<int, vector<int>> candidateMap;
     
-    for(int i=0; i<sequence.size(); i++)
+    int start = 0;
+    int end = 0;
+    int sum = sequence[start];
+    int minLength = sequence.size()+1;
+    int answerStart = 0;
+    int answerEnd = 0;
+    
+    while(start <= end && end < sequence.size())
     {
-        int sum = 0;
-        for(int j=i; j<sequence.size(); j++)
+        if(sum < k)
         {
-            sum += sequence[j];
-            if(sum > k) break;
-            else if(sum == k)
-            {
-                if(candidateMap.find(j-i) != candidateMap.end()) break;
-                candidateMap[j-i].push_back(i);
-                candidateMap[j-i].push_back(j);
-                break;
-            }
+            end++;
+            sum += sequence[end];
+            continue;
         }
+        else if(sum == k
+          && end-start < minLength)
+        {
+            answerStart = start;
+            answerEnd = end;
+            minLength = end-start;
+        }
+        
+        sum -= sequence[start];
+        start++;
     }
     
-    answer = candidateMap.begin()->second;
+    answer.push_back(answerStart);
+    answer.push_back(answerEnd);
     
     return answer;
 }
