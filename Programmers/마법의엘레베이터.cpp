@@ -1,42 +1,36 @@
 #include <string>
 #include <vector>
 #include <cmath>
-#include <iostream>
 using namespace std;
 
 int solution(int storey) {
     int answer = 0;
-    int numLen = to_string(storey).size();
+    int length = to_string(storey).length();
     
     while(1)
     {
-        if(storey == 0) return answer;
-        numLen -= 1;
+        int remainder = storey%10;
+        int nextRemainder = storey%100 - remainder;
 
-        int mostBig = (int)pow(10, numLen);
-        if(storey>mostBig && storey/mostBig > 5)
+        if(remainder >= 6
+          || (remainder==5 && nextRemainder>=50))
         {
-            int temp = 10 - storey/mostBig;
-            answer += temp;
-            storey = storey + temp*mostBig;
+            answer += (10-remainder);
+            storey += 10;
         }
         else
         {
-            answer += storey/mostBig;
-            storey = storey - (storey/mostBig)*mostBig;
+            answer += remainder;
         }
+        
+        string storeyStr = to_string(storey);
+        storey = stoi(storeyStr.substr(0, storeyStr.length()-1));
 
-        if(numLen == 0 || storey == 0) break;
+        if(storey < 10) break;
     }
     
-    if(storey > 5)
-    {
-        answer += 10-storey+1;
-    }
-    else
-    {
-        answer += storey;
-    }
+    if(storey >= 6) answer += (10-storey)+1;
+    else answer += storey;
     
     return answer;
 }
