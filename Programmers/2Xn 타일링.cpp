@@ -3,29 +3,21 @@
 
 using namespace std;
 
-int answerCnt = 0;
-
-void func(int n, int sum)
-{
-    if(sum==n) answerCnt++;
-    if(sum>=n) return;
-    
-    func(n, sum+1);
-    func(n, sum+2);
-}
 
 int solution(int n) {
     int answer = 0;
     
-    if(n%2!=0)
+    vector<int> dp;
+    dp = vector<int>(n, 0);
+    dp[0] = 1;
+    dp[1] = 2;
+    
+    for(int i=2; i<n; i++)
     {
-        answer++;
-        n-=1;
+        dp[i] = (dp[i-1] + dp[i-2]) % 1000000007;
     }
     
-    func(n, 0);
-    
-    answer += answerCnt;
+    answer = dp.back();
     
     return answer;
 }
