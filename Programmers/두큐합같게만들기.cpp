@@ -2,6 +2,7 @@
 #include <vector>
 #include <numeric>
 #include <algorithm>
+#include <iostream>
 using namespace std;
 
 int solution(vector<int> queue1, vector<int> queue2) {
@@ -30,14 +31,24 @@ int solution(vector<int> queue1, vector<int> queue2) {
         {
             long long temp = sum;
             int tempIndex = endIndex;
+            int cnt = size/2;
             while(1)
             {
                 temp -= vec[tempIndex];
                 tempIndex--;
+                cnt--;
                 if(temp < totalSum) break;
                 else if(temp == totalSum)
                 {
-                    int ans = size - (tempIndex-i+1);
+                    int ans = 0;
+                    if(i < size/2)
+                    {
+                        ans = i + (tempIndex+1-size/2);
+                    }
+                    else
+                    {
+                        ans = size/2 + (size/2-cnt);
+                    }
                     answerVec.push_back(ans);
                     break;
                 }
@@ -45,26 +56,26 @@ int solution(vector<int> queue1, vector<int> queue2) {
         }
         else if(sum == totalSum)
         {
-            int ans = (i+1);
+            int ans = i*2;
             answerVec.push_back(ans);
         }
-        else
-        {
-            long long temp = sum;
-            int tempIndex = endIndex;
-            while(1)
-            {
-                tempIndex++;
-                temp += vec[tempIndex];
-                if(temp > totalSum) break;
-                else if(temp == totalSum)
-                {
-                    int ans = (i+1) + ((tempIndex+1) - size/2);
-                    answerVec.push_back(ans);
-                    break;
-                }
-            }
-        }
+        // else
+        // {
+        //     long long temp = sum;
+        //     int tempIndex = endIndex;
+        //     while(1)
+        //     {
+        //         tempIndex++;
+        //         temp += vec[tempIndex];
+        //         if(temp > totalSum) break;
+        //         else if(temp == totalSum)
+        //         {
+        //             int ans = (i+1) + ((tempIndex+1) - size/2);
+        //             answerVec.push_back(ans);
+        //             break;
+        //         }
+        //     }
+        // }
         
         sum -= vec[i];
         endIndex++;
