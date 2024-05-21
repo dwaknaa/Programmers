@@ -1,23 +1,30 @@
 #include <string>
 #include <vector>
-#include <map>
-#include <set>
+#include <algorithm>
 using namespace std;
 
-vector<string> answerVec;
-map<string, multiset<string>> m;
+vector<vector<string>> ticket;
+vector<string> ans;
+vector<bool> visited;
+bool check = false;
 
-void dfs(multiset<string> &s, string depart)
+void dfs(string depart)
 {
-    while(!s.empty())
-    {
-        string city = *s.begin();
-        answerVec.push_back(city);
-        s.erase(city);
+    if(ans.size()==ticket.size()) check = true;
 
-        if(m.find(city)!=m.end() && !m.at(city).empty())
+    for(int i=0; i<ticket.size(); i++)
+    {
+        if(!visited[i] && ticket[i][0]==depart)
         {
-            dfs(m.at(city), city);
+            ans.push_back(ticket[i][1]);
+            visited[i] = true;
+            dfs(ticket[i][1]);
+            
+            if(!check)
+            {
+                ans.pop_back();
+                visited[i] = false;
+            }
         }
     }
 }
@@ -25,25 +32,15 @@ void dfs(multiset<string> &s, string depart)
 vector<string> solution(vector<vector<string>> tickets) {
     vector<string> answer;
     
-    for(int i=0; i<tickets.size(); i++)
-    {
-        std::string a = tickets[i][0];
-        std::string b = tickets[i][1];
-        if(m.find(a) == m.end())
-        {
-            multiset<string> s;
-            s.insert(b);
-            m[a] = s;
-        }
-        else
-        {
-            m[a].insert(b);
-        }
-    }
+    sort(tickets.begin(), tickets.end());
+    ticket = tickets;
     
-    answerVec.push_back("ICN");
-    dfs(m.at("ICN"), "ICN");
-    answer = answerVec;
+    visited.assign(tickets.size(), false);
+    
+    ans.push_back("ICN");
+    dfs("ICN");
+    
+    answer = ans;
     
     return answer;
 }
