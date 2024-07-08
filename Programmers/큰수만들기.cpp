@@ -1,49 +1,28 @@
 #include <string>
 #include <vector>
-#include <algorithm>
+#include <iostream>
 using namespace std;
 
 string solution(string number, int k) {
     string answer = "";
-    vector<string> combineVec;
     
-    vector<int> numVec;
-    for(int i=0; i<number.size(); i++)
+    int size = number.size()-k;
+    int startIndex = 0;
+    for(int i=0; i<size; i++)
     {
-        numVec.push_back(stoi(number.substr(i, 1)));
-    }
-    
-    int len = numVec.size();
-    vector<bool> temp;
-    temp.assign(len, true);
-    for(int i=0; i<k; i++)
-    {
-        temp[i] = false;
-    }
-    
-    string max = "";
-    do {
-        string num = "";
-        for (int i = 0; i<numVec.size(); i++)
+        char max = number[startIndex];
+        int maxIndex = startIndex;
+        for(int j=startIndex; j<=k+i; j++)
         {
-            if(temp[i])
+            if (max < number[j])
             {
-                num += to_string(numVec[i]);
+                max = number[j];
+                maxIndex = j;
             }
         }
-        
-        if(max.empty())
-        {
-            max = num;
-        }
-        else if(!max.empty() && max < num)
-        {
-            max = num;
-        }
-
-    } while (next_permutation(temp.begin(),temp.end()));
-    
-    answer = max;
+        startIndex = maxIndex+1;
+        answer += max;
+    }
     
     return answer;
 }
