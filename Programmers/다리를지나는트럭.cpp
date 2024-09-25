@@ -1,38 +1,45 @@
 #include <string>
 #include <vector>
 #include <queue>
-#include <algorithm>
 using namespace std;
 
 int solution(int bridge_length, int weight, vector<int> truck_weights) {
     int answer = 0;
     
-    reverse(truck_weights.begin(), truck_weights.end());
-    vector<pair<int, int>> onBridgeVec;
-    int onBridgeWeight = 0;
-    
-    while(1)
+    queue<int> passingQue;
+    for(int i=0; i<bridge_length; i++)
     {
-        answer++; // 1초에 한 번 while문을 실행한다고 가정
-        if(truck_weights.size()==0 && onBridgeWeight==0) break;
-
-        if(!truck_weights.empty() &&
-           onBridgeWeight+truck_weights.back() <= weight)
+        // 각 차들의 현재 위치를 파악하기 위해서
+        // 무게 제한으로 인해 트럭이 다리에 오르지 못하는 시간에는
+        // 0으로 채우기 위함
+        passingQue.push(0);
+    }
+    
+    int curWeightSum = 0; // 현재 다리 위에 있는 트럭들의 무게 합
+    int passedCnt = 0; // 지나간 트럭의 대수
+    int passingIndex = 0; // 다음으로 지나가야 하는 트럭의 index
+    while(passedCnt < truck_weights.size())
+    {
+        answer++;
+        int passedTruckWeight = passingQue.front();
+        passingQue.pop();
+        
+        if(passedTruckWeight > 0)
         {
-            onBridgeWeight+=truck_weights.back();
-            onBridgeVec.push_back(make_pair(truck_weights.back(), 0));
-            truck_weights.pop_back();
+            passedCnt++;
+            curWeightSum -= passedTruckWeight;
         }
         
-        for(auto it=onBridgeVec.begin(); it!=onBridgeVec.end(); it++)
+        int nextTruckWeight = truck_weights[passingIndex];
+        if(curWeightSum+nextTruckWeight <= weight)
         {
-            it->second++;
+            passingQue.push(nextTruckWeight);
+            passingIndex++;
+            curWeightSum += nextTruckWeight;
         }
-        
-        if(onBridgeVec.front().second == bridge_length)
+        else
         {
-            onBridgeWeight-=onBridgeVec.front().first;
-            onBridgeVec.erase(onBridgeVec.begin());
+            passingQue.push(0);
         }
     }
     
