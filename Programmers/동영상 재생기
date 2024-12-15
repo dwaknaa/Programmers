@@ -1,0 +1,79 @@
+#include <string>
+#include <vector>
+#include <utility>
+using namespace std;
+
+// mm:ss => ss
+long convertToSec(string time)
+{
+    auto index = time.find(":");
+    int min = stoi(time.substr(0, index));
+    int sec = stoi(time.substr(index+1));
+    
+    return min*60 + sec;
+}
+
+// ss => mm:ss
+string convertToMMSS(long secValue)
+{
+    int min = secValue/60;
+    int sec = secValue%60;
+    
+    string minStr = min >= 10 ? to_string(min) : "0"+to_string(min);
+    string secStr = sec >= 10 ? to_string(sec) : "0"+to_string(sec);
+    
+    return minStr + ":" + secStr;    
+}
+
+string getOpeningSkippedTime(string cur, pair<string, string> opening)
+{
+    auto curSec = convertToSec(cur);
+    auto opStartSec = convertToSec(opening.first);
+    auto opEndSec = convertToSec(opening.second);
+    
+    // 현재 재생 위치가 오프닝 구간이 아닐 때
+    if(curSec < opStartSec || curSec > opEndSec) return cur;
+    
+    return opening.second;
+}
+
+string getPrevTime(string cur)
+{
+    auto curSec = convertToSec(cur);
+    if(curSec <= 10) return "00:00";
+    
+    return convertToMMSS(curSec-10);
+}
+
+string getNextTime(string cur, string videoLen)
+{
+    auto curSec = convertToSec(cur);
+    auto videoFullSec = convertToSec(videoLen);
+    
+    if(curSec+10 >= videoFullSec) return videoLen;
+    
+    return convertToMMSS(curSec+10);
+}
+
+string solution(string video_len, string pos, string op_start, string op_end, vector<string> commands) {
+    string answer = pos;
+    
+    // 마지막 command 수행 후 오프닝 건너뛰기를 수행하기 위함
+    commands.push_back("");
+    
+    for(auto command : commands)
+    {
+        answer = getOpeningSkippedTime(answer, make_pair(op_start, op_end));
+        
+        if (command == "prev")
+        {
+            answer = getPrevTime(answer);
+        }
+        else if (command == "next")
+        {
+            answer = getNextTime(answer, video_len);
+        }
+    }
+    
+    return answer;
+}
